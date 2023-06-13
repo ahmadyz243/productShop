@@ -25,6 +25,7 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request){
 
+        System.out.println("authenticate");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
@@ -32,6 +33,7 @@ public class AuthenticationController {
         if(user != null){
             return ResponseEntity.ok(jwtUtils.generateToken(user));
         }
+
         return ResponseEntity.status(400).body("some error has occurred");
 
     }

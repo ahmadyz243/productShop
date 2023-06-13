@@ -37,7 +37,10 @@ public class SecurityConfig {
         http.httpBasic(withDefaults());
          */
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/**/auth/**").permitAll().anyRequest().authenticated());
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("*/authenticate", "/").permitAll().anyRequest().authenticated());
+
+
+        //http.authorizeHttpRequests((requests) -> requests.requestMatchers("http://localhost:8080/auth/authenticate").permitAll().anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.sessionManagement(sses -> sses.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
