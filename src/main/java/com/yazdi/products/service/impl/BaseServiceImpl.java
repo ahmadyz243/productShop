@@ -10,7 +10,7 @@ public abstract class BaseServiceImpl<ID, T, R extends JpaRepository<T, ID>> imp
     private final R repository;
 
     @Override
-    public T SaveEntity(T entity) {
+    public T saveEntity(T entity) {
         return repository.save(entity);
     }
 

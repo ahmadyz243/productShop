@@ -27,9 +27,9 @@ import java.util.Objects;
 public class AdminController {
 
     @Value("${upload.dir}")
-    String uploadDir;
+    private String uploadDir;
     @Autowired
-    ApplicationContext context;
+    private ApplicationContext context;
     @Autowired
     private ProductService productService;
 
@@ -59,7 +59,7 @@ public class AdminController {
             productProperties.put(req.getParameter("prop" + i), req.getParameter("val" + i));
         }
         product.setOtherProperties(productProperties);
-        productService.SaveEntity(product);
+        productService.saveEntity(product);
 
         try{
             FileUploadUtil.saveFile(uploadDir, fileName, image);

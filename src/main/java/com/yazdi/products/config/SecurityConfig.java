@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -31,16 +33,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("security filter chain");
-        /*
-        http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
-        http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
-         */
+
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("*/authenticate", "/").permitAll().anyRequest().authenticated());
+        http.securityMatcher("").authorizeHttpRequests((requests) -> {
+           requests.requestMatchers("*/authenticate").permitAll()
+                    .anyRequest().authenticated();
+        });
 
-
-        //http.authorizeHttpRequests((requests) -> requests.requestMatchers("http://localhost:8080/auth/authenticate").permitAll().anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.sessionManagement(sses -> sses.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
