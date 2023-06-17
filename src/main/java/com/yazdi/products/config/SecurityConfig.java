@@ -19,8 +19,6 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,9 +33,14 @@ public class SecurityConfig {
         System.out.println("security filter chain");
 
         http.csrf(AbstractHttpConfigurer::disable);
-        http.securityMatcher("").authorizeHttpRequests((requests) -> {
-           requests.requestMatchers("*/authenticate").permitAll()
-                    .anyRequest().authenticated();
+
+
+
+
+        http.securityMatcher("/admin/**", "")
+                .authorizeHttpRequests((requests) -> {
+                    requests.requestMatchers("*/authenticate").permitAll()
+                            .anyRequest().authenticated();
         });
 
         http.authenticationProvider(authenticationProvider());
@@ -52,7 +55,7 @@ public class SecurityConfig {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return  authenticationProvider;
+        return authenticationProvider;
     }
 
     @Bean

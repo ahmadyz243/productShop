@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @RequiredArgsConstructor
 public abstract class BaseServiceImpl<ID, T, R extends JpaRepository<T, ID>> implements BaseService<T> {
 
-    private final R repository;
+    protected final R repository;
 
     @Override
     public T saveEntity(T entity) {
