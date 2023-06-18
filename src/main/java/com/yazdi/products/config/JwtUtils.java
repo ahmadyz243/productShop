@@ -3,9 +3,12 @@ package com.yazdi.products.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +19,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
+    //created on https://8gwifi.org/jwsgen.jsp
     private String jwtSigningKey = "secret";
 
     public String extractUsername(String token){
@@ -37,7 +41,12 @@ public class JwtUtils {
     }
 
     private Claims extractAllClaims(String token){
-        return Jwts.parser().setSigningKey(jwtSigningKey).parseClaimsJwt(token).getBody();
+        return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJwt(token).getBody();
+    }
+
+    private Key getSignInKey() {
+        byte[] ketBytes = Decoders.BASE64.decode(jwtSigningKey);
+        return Keys.hmacShaKeyFor(ketBytes);
     }
 
     private Boolean isTokenExpired(String token){
@@ -59,7 +68,7 @@ public class JwtUtils {
                 .claim("authorities", userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
-                .signWith(SignatureAlgorithm.HS256, jwtSigningKey).compact();
+                .signWith(SignatureAlgorithm.HS256, getSignInKey()).compact();
     }
 
     public Boolean isTokenValid(String token, UserDetails userDetails){
